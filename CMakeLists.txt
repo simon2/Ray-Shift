@@ -537,12 +537,14 @@ endfunction()
 # Just make sure you rename all the occurances of the sample's name in the C code as well
 # and the CMakeLists.txt file.
 
-
-# Our sutil library.  The rules to build it are found in the subdirectory.
 add_subdirectory( optixMeanShiftF32 )
 add_subdirectory( optixMeanShift3DF32 )
 add_subdirectory( optixMeanShiftF64 )
 add_subdirectory( optixMeanShift3DF64 )
+add_subdirectory( optixMeanShiftF32MG )
+add_subdirectory( optixMeanShift3DF32MG )
+
+# Our sutil library.  The rules to build it are found in the subdirectory.
 add_subdirectory(sutil)
 # Third-party support libraries.
 add_subdirectory(support)
