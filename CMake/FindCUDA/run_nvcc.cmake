@@ -261,7 +261,12 @@ cuda_execute_process(
   ${nvcc_flags}
   ${depends_nvcc_host_compiler_flags}
   ${depends_CUDA_NVCC_FLAGS}
-  -DNVCC
+  # -DNVCC removed: CCCL (Thrust/CUB/libcu++, CUDA 12.x) tests the compiler with
+  # the function-like macro _CCCL_CUDA_COMPILER(NVCC), passing NVCC as an
+  # identifier. Defining NVCC on the command line expands it to nothing, the
+  # test fails, and Thrust silently disables its CUDA backend -- sort_by_key
+  # then dispatches to the generic backend and hits
+  # "static assertion failed with unimplemented for this system".
   ${CUDA_NVCC_INCLUDE_ARGS}
   )
 
@@ -330,7 +335,7 @@ cuda_execute_process(
   ${nvcc_flags}
   ${nvcc_host_compiler_flags}
   ${CUDA_NVCC_FLAGS}
-  -DNVCC
+  # -DNVCC removed -- see the note on the dependency-generation command above.
   ${CUDA_NVCC_INCLUDE_ARGS}
   ${get_error}
   )
@@ -381,7 +386,7 @@ if( build_cubin )
     ${nvcc_flags}
     ${CCBIN}
     ${nvcc_host_compiler_flags}
-    -DNVCC
+    # -DNVCC removed -- see the note on the dependency-generation command above.
     -cubin
     -o "${generated_cubin_file}"
     ${CUDA_NVCC_INCLUDE_ARGS}

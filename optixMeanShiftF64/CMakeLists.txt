@@ -28,7 +28,7 @@
 
 # On-device AABB generation kernel, compiled as a regular CUDA object (not
 # OptiX-IR) into its own static library and linked into the sample.
-CUDA_ADD_LIBRARY( optixMeanShiftF64_aabb aabb_kernel.cu )
+CUDA_ADD_LIBRARY( optixMeanShiftF64_aabb aabb_kernel.cu STATIC )
 
 OPTIX_add_sample_executable( optixMeanShiftF64 target_name
   optixMeanShiftF64.cu
