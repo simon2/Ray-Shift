@@ -263,7 +263,17 @@ static void dedup_centers( const std::vector<double>& cx, const std::vector<doub
     const int m = (int)cx.size();
     std::vector<int> order( m );
     for( int i = 0; i < m; ++i ) order[i] = i;
-    std::stable_sort( order.begin(), order.end(), [&]( int a, int b ) { return dens[a] > dens[b]; } );
+    // Tie-break mirrors sklearn's sorted(..., key=lambda tup: (tup[1], tup[0]),
+    // reverse=True): density descending, then the center tuple descending. With
+    // density alone the surviving set depends on the seed array order, so an
+    // engine that permutes its seeds (cluster's strided --dist discrete) derives
+    // a different partition from the very same modes.
+    std::stable_sort( order.begin(), order.end(), [&]( int a, int b ) {
+        if( dens[a] != dens[b] ) return dens[a] > dens[b];
+        if( cx[a] != cx[b] )     return cx[a] > cx[b];
+        if( cy[a] != cy[b] )     return cy[a] > cy[b];
+        return cz[a] > cz[b];
+    } );
     const double bw2 = bw * bw;
     std::vector<char> unique( m, 1 );
     for( int oi = 0; oi < m; ++oi )
